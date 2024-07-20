@@ -12,77 +12,95 @@ string rtrim(const string &);
  * The function accepts LONG_INTEGER x as parameter.
  */
 
-// Source:
-// https://www.hackerrank.com/challenges/decibinary-numbers/forum craig53
+using namespace std;
 
-constexpr int digits = 10;
-constexpr int powers = 20;
-constexpr int max_value = 290000;
-vector<vector<long>> v(max_value, vector<long>(powers));
-vector<long> c(max_value);
+constexpr int MAX_DIGITS = 10;
+constexpr int MAX_POWERS = 20;
+constexpr int MAX_DECIMAL_VALUE = 300000;
 
-void pre_make_table()
+vector<vector<long>> dpTable(MAX_DECIMAL_VALUE, vector<long>(MAX_POWERS));
+vector<long> cumulativeCounts(MAX_DECIMAL_VALUE);
+
+void precomputeTable()
 {
-    for (int i = 0; i < max_value; ++i)
+    for (int decimalValue = 0; decimalValue < MAX_DECIMAL_VALUE; ++decimalValue)
     {
-        v[i][0] = i < digits;
+        dpTable[decimalValue][0] = decimalValue < MAX_DIGITS ? 1 : 0;
 
-        for (int j = 1; j < powers; ++j)
+        for (int powerIndex = 1; powerIndex < MAX_POWERS; ++powerIndex)
         {
-            for (int k = 0; k < digits; ++k)
+            int powerValue = 1 << powerIndex;
+            for (int digit = 0; digit < MAX_DIGITS; ++digit)
             {
-                int value = i - k * (1 << j);
-        
-                if (value < 0)
-                    break;
-                    
-                v[i][j] += v[value][j - 1];
+                int remainingValue = decimalValue - digit * powerValue;
+
+                if (remainingValue < 0) break;
+
+                dpTable[decimalValue][powerIndex] += dpTable[remainingValue][powerIndex - 1];
             }
         }
     }
 
-    for (int i = 1; i < max_value; i++)
+    for (int decimalValue = 1; decimalValue < MAX_DECIMAL_VALUE; ++decimalValue)
     {
-        c[i] = v[i - 1][powers - 1] + c[i - 1];
+        cumulativeCounts[decimalValue] = 
+            dpTable[decimalValue - 1][MAX_POWERS - 1] + cumulativeCounts[decimalValue - 1];
     }
 }
+
 
 long decibinaryNumbers(long x)
 {
-    long result = 0;
-    auto l = std::upper_bound(c.begin(), c.end(), x - 1) - 1;
-    int value = l - c.begin();
-    long offset = (x - 1) - *l;
+    static bool precomputed = false;
 
-    for (int i = powers - 1; i >= 1; i--)
+    if (!precomputed)
     {
-        int power = 1 << i;
+        precomputed = true;
+        precomputeTable();
+    }
 
-        for (int digit = 0; digit < digits; digit++)
+    if (x <= 0) return -1;
+
+    long result = 0;
+    auto upperBound = upper_bound(cumulativeCounts.begin(), cumulativeCounts.end(), x - 1);
+
+    if (upperBound == cumulativeCounts.begin())
+    {
+        return -1;
+    }
+
+    int decimalValue = (upperBound - cumulativeCounts.begin()) - 1;
+    long offset = (x - 1) - cumulativeCounts[decimalValue];
+
+    for (int powerIndex = MAX_POWERS - 1; powerIndex >= 1; --powerIndex)
+    {
+        int binaryPlaceValue = 1 << powerIndex;
+
+        for (int digit = 0; digit < MAX_DIGITS; ++digit)
         {
-            int v1 = value - digit * power;
+            int remainingValue = decimalValue - digit * binaryPlaceValue;
 
-            if (offset < v[v1][i - 1])
+            if (remainingValue >= 0 && offset < dpTable[remainingValue][powerIndex - 1])
             {
-                result += digit;
-                value -= power * digit;
+                result = result * 10 + digit;
+                decimalValue = remainingValue;
                 break;
             }
 
-            offset -= v[v1][i - 1];
+            if (remainingValue >= 0)
+            {
+                offset -= dpTable[remainingValue][powerIndex - 1];
+            }
         }
-
-        result *= 10;
     }
 
-    result += value;
+    result = result * 10 + decimalValue;
     return result;
 }
 
+
 int main()
 {
-    pre_make_table();
-    
     ofstream fout(getenv("OUTPUT_PATH"));
 
     string q_temp;
