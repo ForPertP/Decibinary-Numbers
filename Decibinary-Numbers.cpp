@@ -12,8 +12,6 @@ string rtrim(const string &);
  * The function accepts LONG_INTEGER x as parameter.
  */
 
-using namespace std;
-
 constexpr int MAX_DIGITS = 10;
 constexpr int MAX_POWERS = 20;
 constexpr int MAX_DECIMAL_VALUE = 300000;
