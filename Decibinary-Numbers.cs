@@ -22,7 +22,7 @@ class Result
      * The function accepts LONG_INTEGER x as parameter.
      */
 
-   private const int MAX_DIGITS = 10;
+    private const int MAX_DIGITS = 10;
     private const int MAX_POWERS = 20;
     private const int MAX_DECIMAL_VALUE = 300000;
 
