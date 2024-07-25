@@ -22,6 +22,48 @@ class Result
      * The function accepts LONG_INTEGER x as parameter.
      */
 
+   private const int MAX_DIGITS = 10;
+    private const int MAX_POWERS = 20;
+    private const int MAX_DECIMAL_VALUE = 300000;
+
+    private static readonly long[,] dpTable = new long[MAX_DECIMAL_VALUE, MAX_POWERS];
+    private static readonly long[] cumulativeCounts = new long[MAX_DECIMAL_VALUE];
+
+    static Lazy<bool> precomputed = new Lazy<bool>(() =>
+    {
+        PrecomputeTable();
+        return true;
+    });
+    //private static bool precomputed = false;
+    
+
+    private static void PrecomputeTable()
+    {
+        for (int i = 0; i < MAX_DECIMAL_VALUE; ++i)
+        {
+            dpTable[i, 0] = i < MAX_DIGITS ? 1 : 0;
+
+            for (int j = 1; j < MAX_POWERS; ++j)
+            {
+                int powerValue = 1 << j;
+                for (int digit = 0; digit < MAX_DIGITS; ++digit)
+                {
+                    int remainingValue = i - digit * powerValue;
+
+                    if (remainingValue < 0) break;
+
+                    dpTable[i, j] += dpTable[remainingValue, j - 1];
+                }
+            }
+        }
+
+        for (int i = 1; i < MAX_DECIMAL_VALUE; ++i)
+        {
+            cumulativeCounts[i] =
+                dpTable[i - 1, MAX_POWERS - 1] + cumulativeCounts[i - 1];
+        }
+    }
+    
     public static long decibinaryNumbers(long x)
     {
         long result = 0L;
