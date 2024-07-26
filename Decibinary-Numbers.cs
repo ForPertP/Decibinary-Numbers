@@ -66,10 +66,21 @@ class Result
     
     public static long decibinaryNumbers(long x)
     {
-        long result = 0L;
-        return result;
-    }
+         bool ensurePrecomputed = precomputed.Value;
+        // if (!precomputed)
+        // {
+        //     precomputed = true;
+        //     PrecomputeTable();
+        // }
 
+        if (x <= 0) return -1;
+
+        long result = 0;
+        int decimalValue = Array.BinarySearch(cumulativeCounts, x - 1);
+        if (decimalValue < 0)
+        {
+            decimalValue = ~decimalValue - 1;
+        }   
     
 }
 
