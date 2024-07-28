@@ -63,7 +63,7 @@ class Result
                 dpTable[i - 1, MAX_POWERS - 1] + cumulativeCounts[i - 1];
         }
     }
-    
+
     public static long decibinaryNumbers(long x)
     {
          bool ensurePrecomputed = precomputed.Value;
@@ -80,9 +80,9 @@ class Result
         if (decimalValue < 0)
         {
             decimalValue = ~decimalValue - 1;
-        }   
+        }
 
-       long offset = (x - 1) - cumulativeCounts[decimalValue];
+        long offset = (x - 1) - cumulativeCounts[decimalValue];
 
         for (int j = MAX_POWERS - 1; j >= 1; --j)
         {
@@ -104,9 +104,14 @@ class Result
                     offset -= dpTable[remainingValue, j - 1];
                 }
             }
-        }                
-}
+        }        
+        
+        result = result * 10 + decimalValue;
+        return result;
+    }
 
+    
+}
 
 
 class Solution
