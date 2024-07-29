@@ -24,18 +24,23 @@ class Result
 
     private const int MAX_DIGITS = 10;
     private const int MAX_POWERS = 20;
-    private const int MAX_DECIMAL_VALUE = 300000;
+    private const int MAX_DECIMAL_VALUE = 286000;
 
     private static readonly long[,] dpTable = new long[MAX_DECIMAL_VALUE, MAX_POWERS];
     private static readonly long[] cumulativeCounts = new long[MAX_DECIMAL_VALUE];
 
-    static Lazy<bool> precomputed = new Lazy<bool>(() =>
+    static Result()
+    {
+        PrecomputeTable();
+    }
+    
+   static Lazy<bool> precomputed = new Lazy<bool>(() =>
     {
         PrecomputeTable();
         return true;
     });
-    //private static bool precomputed = false;
     
+    //private static bool precomputed = false;    
 
     private static void PrecomputeTable()
     {
@@ -49,9 +54,7 @@ class Result
                 for (int digit = 0; digit < MAX_DIGITS; ++digit)
                 {
                     int remainingValue = i - digit * powerValue;
-
                     if (remainingValue < 0) break;
-
                     dpTable[i, j] += dpTable[remainingValue, j - 1];
                 }
             }
@@ -59,20 +62,20 @@ class Result
 
         for (int i = 1; i < MAX_DECIMAL_VALUE; ++i)
         {
-            cumulativeCounts[i] =
-                dpTable[i - 1, MAX_POWERS - 1] + cumulativeCounts[i - 1];
+            cumulativeCounts[i] = dpTable[i - 1, MAX_POWERS - 1] + cumulativeCounts[i - 1];
         }
     }
 
     public static long decibinaryNumbers(long x)
     {
-         bool ensurePrecomputed = precomputed.Value;
+        // bool ensurePrecomputed = precomputed.Value;
+        
         // if (!precomputed)
         // {
         //     precomputed = true;
         //     PrecomputeTable();
         // }
-
+        
         if (x <= 0) return -1;
 
         long result = 0;
@@ -104,13 +107,11 @@ class Result
                     offset -= dpTable[remainingValue, j - 1];
                 }
             }
-        }        
-        
+        }
+
         result = result * 10 + decimalValue;
         return result;
     }
-
-    
 }
 
 
