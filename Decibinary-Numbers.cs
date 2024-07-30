@@ -112,6 +112,7 @@ class Result
         result = result * 10 + decimalValue;
         return result;
     }
+    
 }
 
 
