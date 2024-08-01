@@ -14,48 +14,42 @@ string rtrim(const string &);
 
 constexpr int MAX_DIGITS = 10;
 constexpr int MAX_POWERS = 20;
-constexpr int MAX_DECIMAL_VALUE = 300000;
+constexpr int MAX_DECIMAL_VALUE = 286000;
 
 vector<vector<long>> dpTable(MAX_DECIMAL_VALUE, vector<long>(MAX_POWERS));
 vector<long> cumulativeCounts(MAX_DECIMAL_VALUE);
+std::once_flag precompute_flag;
 
 void precomputeTable()
 {
-    for (int decimalValue = 0; decimalValue < MAX_DECIMAL_VALUE; ++decimalValue)
+    for (int i = 0; i < MAX_DECIMAL_VALUE; ++i)
     {
-        dpTable[decimalValue][0] = decimalValue < MAX_DIGITS ? 1 : 0;
+        dpTable[i][0] = i < MAX_DIGITS ? 1 : 0;
 
-        for (int powerIndex = 1; powerIndex < MAX_POWERS; ++powerIndex)
+        for (int j = 1; j < MAX_POWERS; ++j)
         {
-            int powerValue = 1 << powerIndex;
+            int powerValue = 1 << j;
+     
             for (int digit = 0; digit < MAX_DIGITS; ++digit)
             {
-                int remainingValue = decimalValue - digit * powerValue;
-
+                int remainingValue = i - digit * powerValue;
                 if (remainingValue < 0) break;
-
-                dpTable[decimalValue][powerIndex] += dpTable[remainingValue][powerIndex - 1];
+                dpTable[i][j] += dpTable[remainingValue][j - 1];
             }
         }
     }
 
-    for (int decimalValue = 1; decimalValue < MAX_DECIMAL_VALUE; ++decimalValue)
+    for (int i = 1; i < MAX_DECIMAL_VALUE; ++i)
     {
-        cumulativeCounts[decimalValue] = 
-            dpTable[decimalValue - 1][MAX_POWERS - 1] + cumulativeCounts[decimalValue - 1];
+        cumulativeCounts[i] = dpTable[i - 1][MAX_POWERS - 1] + cumulativeCounts[i - 1];
     }
 }
 
 
 long decibinaryNumbers(long x)
 {
-    static bool precomputed = false;
-
-    if (!precomputed)
-    {
-        precomputed = true;
-        precomputeTable();
-    }
+    std::call_once(precompute_flag, precomputeTable);
+    //static bool precomputed = (precomputeTable(), true); 
 
     if (x <= 0) return -1;
 
@@ -70,15 +64,15 @@ long decibinaryNumbers(long x)
     int decimalValue = (upperBound - cumulativeCounts.begin()) - 1;
     long offset = (x - 1) - cumulativeCounts[decimalValue];
 
-    for (int powerIndex = MAX_POWERS - 1; powerIndex >= 1; --powerIndex)
+    for (int j = MAX_POWERS - 1; j >= 1; --j)
     {
-        int binaryPlaceValue = 1 << powerIndex;
+        int binaryPlaceValue = 1 << j;
 
         for (int digit = 0; digit < MAX_DIGITS; ++digit)
         {
             int remainingValue = decimalValue - digit * binaryPlaceValue;
 
-            if (remainingValue >= 0 && offset < dpTable[remainingValue][powerIndex - 1])
+            if (remainingValue >= 0 && offset < dpTable[remainingValue][j - 1])
             {
                 result = result * 10 + digit;
                 decimalValue = remainingValue;
@@ -87,7 +81,7 @@ long decibinaryNumbers(long x)
 
             if (remainingValue >= 0)
             {
-                offset -= dpTable[remainingValue][powerIndex - 1];
+                offset -= dpTable[remainingValue][j - 1];
             }
         }
     }
