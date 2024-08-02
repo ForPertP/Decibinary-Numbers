@@ -22,7 +22,13 @@ class Result {
     private static final int MAX_DIGITS = 10;
     private static final int MAX_POWERS = 20;
     private static final int MAX_DECIMAL_VALUE = 286000;
-  
+
+    private static final long[][] dpTable = new long[MAX_DECIMAL_VALUE][MAX_POWERS];
+    private static final long[] cumulativeCounts = new long[MAX_DECIMAL_VALUE];
+
+    private static boolean precomputed = false;
+
+    public static long decibinaryNumbers(long x) {}
 
 }
 
