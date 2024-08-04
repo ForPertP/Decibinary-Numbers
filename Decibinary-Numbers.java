@@ -28,6 +28,28 @@ class Result {
 
     private static boolean precomputed = false;
 
+    private static void precomputeTable() {
+        for (int decimalValue = 0; decimalValue < MAX_DECIMAL_VALUE; ++decimalValue) {
+            dpTable[decimalValue][0] = decimalValue < MAX_DIGITS ? 1 : 0;
+
+            for (int powerIndex = 1; powerIndex < MAX_POWERS; ++powerIndex) {
+                int powerValue = 1 << powerIndex;
+                for (int digit = 0; digit < MAX_DIGITS; ++digit) {
+                    int remainingValue = decimalValue - digit * powerValue;
+
+                    if (remainingValue < 0) break;
+
+                    dpTable[decimalValue][powerIndex] += dpTable[remainingValue][powerIndex - 1];
+                }
+            }
+        }
+
+        for (int decimalValue = 1; decimalValue < MAX_DECIMAL_VALUE; ++decimalValue) {
+            cumulativeCounts[decimalValue] = 
+                dpTable[decimalValue - 1][MAX_POWERS - 1] + cumulativeCounts[decimalValue - 1];
+        }
+    }
+    
     public static long decibinaryNumbers(long x) {}
 
 }
