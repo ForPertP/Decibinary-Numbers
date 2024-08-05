@@ -22,7 +22,7 @@ class Result {
     private static final int MAX_DIGITS = 10;
     private static final int MAX_POWERS = 20;
     private static final int MAX_DECIMAL_VALUE = 286000;
-
+    
     private static final long[][] dpTable = new long[MAX_DECIMAL_VALUE][MAX_POWERS];
     private static final long[] cumulativeCounts = new long[MAX_DECIMAL_VALUE];
 
@@ -49,12 +49,30 @@ class Result {
                 dpTable[decimalValue - 1][MAX_POWERS - 1] + cumulativeCounts[decimalValue - 1];
         }
     }
-    
-    public static long decibinaryNumbers(long x) {}
+
+
+    public static long decibinaryNumbers(long x) {
+        if (!precomputed) {
+            precomputed = true;
+            precomputeTable();
+        }
+
+        if (x <= 0) return -1;
+
+        long result = 0;
+        int decimalValue = Arrays.binarySearch(cumulativeCounts, x - 1);
+        if (decimalValue < 0) {
+            decimalValue = -decimalValue - 2;
+        }
+
+        long offset = (x - 1) - cumulativeCounts[decimalValue];
+
+        result = result * 10 + decimalValue;
+        return result;
+    }
+
 
 }
-
-
 
 public class Solution {
     public static void main(String[] args) throws IOException {
@@ -80,4 +98,3 @@ public class Solution {
         bufferedWriter.close();
     }
 }
-
