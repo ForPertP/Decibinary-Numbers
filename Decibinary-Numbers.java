@@ -67,6 +67,21 @@ class Result {
 
         long offset = (x - 1) - cumulativeCounts[decimalValue];
 
+        for (int powerIndex = MAX_POWERS - 1; powerIndex >= 1; --powerIndex) {
+            int binaryPlaceValue = 1 << powerIndex;
+
+            for (int digit = 0; digit < MAX_DIGITS; ++digit) {
+                int remainingValue = decimalValue - digit * binaryPlaceValue;
+
+                if (remainingValue >= 0 && offset < dpTable[remainingValue][powerIndex - 1]) {
+                    result = result * 10 + digit;
+                    decimalValue = remainingValue;
+                    break;
+                }
+            }
+        }
+
+        
         result = result * 10 + decimalValue;
         return result;
     }
