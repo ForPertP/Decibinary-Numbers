@@ -78,10 +78,13 @@ class Result {
                     decimalValue = remainingValue;
                     break;
                 }
+
+                if (remainingValue >= 0) {
+                    offset -= dpTable[remainingValue][powerIndex - 1];
+                }
             }
         }
 
-        
         result = result * 10 + decimalValue;
         return result;
     }
