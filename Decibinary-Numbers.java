@@ -26,6 +26,7 @@ class Result {
     private static final long[][] dpTable = new long[MAX_DECIMAL_VALUE][MAX_POWERS];
     private static final long[] cumulativeCounts = new long[MAX_DECIMAL_VALUE];
 
+    private static final AtomicBoolean precomputed1 = new AtomicBoolean(false);
     private static boolean precomputed = false;
 
     private static void precomputeTable() {
