@@ -53,10 +53,15 @@ class Result {
 
 
     public static long decibinaryNumbers(long x) {
-        if (!precomputed) {
-            precomputed = true;
+
+       if (precomputed1.compareAndSet(false, true)) {
             precomputeTable();
-        }
+        }        
+        
+        // if (!precomputed) {
+        //     precomputed = true;
+        //     precomputeTable();
+        // }        
 
         if (x <= 0) return -1;
 
