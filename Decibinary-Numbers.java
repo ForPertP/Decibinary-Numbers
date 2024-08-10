@@ -10,6 +10,8 @@ import java.util.stream.*;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 class Result {
 
     /*
@@ -26,8 +28,9 @@ class Result {
     private static final long[][] dpTable = new long[MAX_DECIMAL_VALUE][MAX_POWERS];
     private static final long[] cumulativeCounts = new long[MAX_DECIMAL_VALUE];
 
-    private static final AtomicBoolean precomputed1 = new AtomicBoolean(false);
-    private static boolean precomputed = false;
+    private static final AtomicBoolean precomputed = new AtomicBoolean(false);
+
+    //private static boolean precomputed = false;
 
     private static void precomputeTable() {
         for (int decimalValue = 0; decimalValue < MAX_DECIMAL_VALUE; ++decimalValue) {
@@ -53,15 +56,14 @@ class Result {
 
 
     public static long decibinaryNumbers(long x) {
-
-       if (precomputed1.compareAndSet(false, true)) {
+        if (precomputed.compareAndSet(false, true)) {
             precomputeTable();
         }        
         
         // if (!precomputed) {
         //     precomputed = true;
         //     precomputeTable();
-        // }        
+        // }
 
         if (x <= 0) return -1;
 
