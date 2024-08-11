@@ -30,9 +30,9 @@ void precomputeTable()
         {
             int powerValue = 1 << j;
      
-            for (int digit = 0; digit < MAX_DIGITS; ++digit)
+            for (int k = 0; k < MAX_DIGITS; ++k)
             {
-                int remainingValue = i - digit * powerValue;
+                int remainingValue = i - k * powerValue;
                 if (remainingValue < 0) break;
                 dpTable[i][j] += dpTable[remainingValue][j - 1];
             }
@@ -68,13 +68,13 @@ long decibinaryNumbers(long x)
     {
         int binaryPlaceValue = 1 << j;
 
-        for (int digit = 0; digit < MAX_DIGITS; ++digit)
+        for (int k = 0; k < MAX_DIGITS; ++k)
         {
-            int remainingValue = decimalValue - digit * binaryPlaceValue;
+            int remainingValue = decimalValue - k * binaryPlaceValue;
 
             if (remainingValue >= 0 && offset < dpTable[remainingValue][j - 1])
             {
-                result = result * 10 + digit;
+                result = result * 10 + k;
                 decimalValue = remainingValue;
                 break;
             }
