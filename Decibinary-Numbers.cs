@@ -34,7 +34,7 @@ class Result
         PrecomputeTable();
     }
     
-   static Lazy<bool> precomputed = new Lazy<bool>(() =>
+    static Lazy<bool> precomputed = new Lazy<bool>(() =>
     {
         PrecomputeTable();
         return true;
