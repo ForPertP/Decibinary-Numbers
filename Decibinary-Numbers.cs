@@ -51,9 +51,9 @@ class Result
             for (int j = 1; j < MAX_POWERS; ++j)
             {
                 int powerValue = 1 << j;
-                for (int digit = 0; digit < MAX_DIGITS; ++digit)
+                for (int k = 0; k < MAX_DIGITS; ++k)
                 {
-                    int remainingValue = i - digit * powerValue;
+                    int remainingValue = i - k * powerValue;
                     if (remainingValue < 0) break;
                     dpTable[i, j] += dpTable[remainingValue, j - 1];
                 }
