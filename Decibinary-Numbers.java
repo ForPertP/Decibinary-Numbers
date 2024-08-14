@@ -38,8 +38,8 @@ class Result {
 
             for (int powerIndex = 1; powerIndex < MAX_POWERS; ++powerIndex) {
                 int powerValue = 1 << powerIndex;
-                for (int digit = 0; digit < MAX_DIGITS; ++digit) {
-                    int remainingValue = decimalValue - digit * powerValue;
+                for (int k = 0; k < MAX_DIGITS; ++k) {
+                    int remainingValue = decimalValue - k * powerValue;
 
                     if (remainingValue < 0) break;
 
