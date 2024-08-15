@@ -78,11 +78,11 @@ class Result {
         for (int powerIndex = MAX_POWERS - 1; powerIndex >= 1; --powerIndex) {
             int binaryPlaceValue = 1 << powerIndex;
 
-            for (int digit = 0; digit < MAX_DIGITS; ++digit) {
-                int remainingValue = decimalValue - digit * binaryPlaceValue;
+            for (int k = 0; k < MAX_DIGITS; ++k) {
+                int remainingValue = decimalValue - k * binaryPlaceValue;
 
                 if (remainingValue >= 0 && offset < dpTable[remainingValue][powerIndex - 1]) {
-                    result = result * 10 + digit;
+                    result = result * 10 + k;
                     decimalValue = remainingValue;
                     break;
                 }
